@@ -174,6 +174,44 @@ void Bank::deposit_account(int acc_num, int password, int amount, int atm_id){
     readers_unlock(&bank_read_mutex,bank_num_readers,&bank_write_mutex);       // UnLock the Bank for Reading
 }
 
+void Bank::withdraw_account(int acc_num, int password, int amount, int atm_id){    
+    readers_lock(&bank_read_mutex,bank_num_readers,&bank_write_mutex);    // Lock the Bank for Reading
+    // sleep(1)
+    map<int, Account>::iterator it = accounts.find(acc_num);
+    if (it == accounts.end()) {
+        //lock log
+        logFile << "Error " << atm_id << ": Your transaction failed - account id " << acc_num << " does not exist" << endl;
+        //unlock log
+        readers_unlock(&bank_read_mutex,bank_num_readers,&bank_write_mutex);       // UnLock the Bank for Reading
+        return;
+    }
+    if (it->second.password != password) {
+        //lock log
+        logFile << "Error " << atm_id << ": Your transaction failed - password for account id " << acc_num << " is incorrect" << endl;
+        //unlock log
+        readers_unlock(&bank_read_mutex,bank_num_readers,&bank_write_mutex);       // UnLock the Bank for Reading
+        return;
+    }
+    
+    writers_lock(&(it->second.acc_write_mutex));      //lock specific account balance mutex - WRITERS
+    if(amount > it->second.balance){
+        // lock log
+        logFile << "Error " << atm_id << ": Your transaction failed - account id " << acc_num 
+        << " balance is lower than " << amount << endl;
+        // unlock log
+    writers_unlock(&(it->second.acc_write_mutex));     //unlock specific account balance mutex - WRITER   - to check
+    readers_unlock(&bank_read_mutex,bank_num_readers,&bank_write_mutex);       // UnLock the Bank for Reading
+        return;
+    }
+    it->second.balance -= amount;
+    //lock log
+    logFile << atm_id << ": Account " << acc_num << " new balance is " << it->second.balance 
+    << " after " << amount << " $ was withdrew" <<endl;
+    // unlock log
+    writers_unlock(&(it->second.acc_write_mutex));     //unlock specific account balance mutex - WRITER   - to check
+    readers_unlock(&bank_read_mutex,bank_num_readers,&bank_write_mutex);       // UnLock the Bank for Reading
+}
+
 void Bank::take_fees_account(){
     int total_fees = 0;
     int int_fee = randomize_fee();
@@ -228,6 +266,10 @@ void Bank::exe_command(char cmd_type, vector<int> cmd_args, int atm_id){
         
         case 'D': 
             deposit_account(cmd_args[0], cmd_args[1], cmd_args[2], atm_id);
+            break;
+
+        case 'W': 
+            withdraw_account(cmd_args[0], cmd_args[1], cmd_args[2], atm_id);
             break;
 
         default: 

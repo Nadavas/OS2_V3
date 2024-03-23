@@ -64,6 +64,7 @@ public:
 	void open_account(int acc_num, int password, int initial_balance, int atm_id);
 	void close_account(int acc_num, int password, int atm_id);
 	void deposit_account(int acc_num, int password, int amount, int atm_id);
+	void withdraw_account(int acc_num, int password, int amount, int atm_id);
 	void take_fees_account();
 	void print_accounts();
 	void exe_command(char cmd_type, vector<int> cmd_args, int atm_id);

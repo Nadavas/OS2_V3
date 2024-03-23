@@ -17,11 +17,19 @@ int main(int argc, char *argv[]){
 	clearLogFile << "" << std::endl;
 	clearLogFile.close(); // Close the file after truncating it
 	
+	// thread 1
 	pthread_t thread_id;
 	pair<string, int> path_id = make_pair("atm_in.txt", 0);
 	pthread_create(&thread_id, NULL, atm_routine, (void*)&path_id);
 	pthread_join(thread_id, NULL);
 
+	// thread 2
+	pthread_t thread_id1;
+	pair<string, int> path_id1 = make_pair("atm_in1.txt", 1);
+	pthread_create(&thread_id1, NULL, atm_routine, (void*)&path_id1);
+	pthread_join(thread_id1, NULL);
+	
+	
 	logFile.close();
 	return 0;
 }
