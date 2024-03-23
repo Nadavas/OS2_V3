@@ -1,21 +1,39 @@
 
-2: New account id is 12345 with password 123 and initial balance 30
+3: New account id is 1 with password 1 and initial balance 1
 1: New account id is 111 with password 1234 and initial balance 50
-2: New account id is 123 with password 990 and initial balance 100
+2: New account id is 12345 with password 123 and initial balance 30
 1: New account id is 222 with password 568 and initial balance 20
-Bank: commissions of 1 % were charged, the bank gained 1 $ from account 111
-Bank: commissions of 1 % were charged, the bank gained 1 $ from account 123
-Bank: commissions of 1 % were charged, the bank gained 0 $ from account 222
-Bank: commissions of 1 % were charged, the bank gained 0 $ from account 12345
-2: Account 12345 new balance is 40 after 10 $ was deposited
+Error 3: Your transaction failed - account id 123 does not exist
+3: Transfer 1 from account 1 to account 12345 new account balance is 0 new target account balance is 31
+3: Transfer 1 from account 1 to account 12345 new account balance is 0 new target account balance is 31
 Error 1: Your transaction failed - password for account id 111 is incorrect
-Error 2: Your transaction failed - password for account id 123 is incorrect
+Bank: commissions of 2 % were charged, the bank gained 0 $ from account 1
+Bank: commissions of 2 % were charged, the bank gained 1 $ from account 111
+Bank: commissions of 2 % were charged, the bank gained 0 $ from account 222
+Bank: commissions of 2 % were charged, the bank gained 1 $ from account 12345
+2: New account id is 123 with password 990 and initial balance 100
 Error 1: Your transaction failed - account id 1222 does not exist
-2: Account 123 is now closed. Balance was 99
+Error 1: Your transaction failed - account id 1222 does not exist
+Error 3: Your transaction failed - password for account id 12345 is incorrect
+Error 1: Your transaction failed - account id 1222 does not exist
+Error 3: Your transaction failed - password for account id 12345 is incorrect
+2: Account 12345 new balance is 40 after 10 $ was deposited
 Error 1: Your transaction failed - account id 111 balance is lower than 300
-2: Account 12345 new balance is 20 after 20 $ was withdrew
+Error 3: Your transaction failed - password for account id 12345 is incorrect
+Error 3: Your transaction failed - password for account id 12345 is incorrect
+Error 2: Your transaction failed - password for account id 123 is incorrect
 1: Transfer 20 from account 111 to account 222 new account balance is 29 new target account balance is 40
-2: Account 12345 balance is 20
+Error 3: Your transaction failed - password for account id 123 is incorrect
+Bank: commissions of 3 % were charged, the bank gained 0 $ from account 1
 Bank: commissions of 3 % were charged, the bank gained 1 $ from account 111
+Bank: commissions of 3 % were charged, the bank gained 3 $ from account 123
 Bank: commissions of 3 % were charged, the bank gained 1 $ from account 222
 Bank: commissions of 3 % were charged, the bank gained 1 $ from account 12345
+2: Account 123 is now closed. Balance was 97
+3: Account 1 balance is 0
+2: Account 12345 new balance is 19 after 20 $ was withdrew
+2: Account 12345 balance is 19
+Bank: commissions of 2 % were charged, the bank gained 0 $ from account 1
+Bank: commissions of 2 % were charged, the bank gained 1 $ from account 111
+Bank: commissions of 2 % were charged, the bank gained 1 $ from account 222
+Bank: commissions of 2 % were charged, the bank gained 0 $ from account 12345
