@@ -19,6 +19,8 @@
 #include <cmath>
 #include <vector>
 #include <sstream>
+#include <chrono>
+#include <thread>
 
 using namespace std;
 
@@ -79,5 +81,6 @@ public:
 	char parse_line(const std::string& input_line, std::vector<int>& args);
 	vector<string> convert_file_to_vec(const string& filePath);
 	int countWords(const std::string& str);
+	void activate_sleep_milli(int millis);
 #endif
 
