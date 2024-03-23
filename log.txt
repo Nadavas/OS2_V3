@@ -12,3 +12,6 @@ Error 1: Your transaction failed - password for account id 123 is incorrect
 1: Account 123 is now closed. Balance was 100
 1: Account 12345 new balance is 20 after 20 $ was withdrew
 1: Account 12345 balance is 20
+Bank: commissions of 2 % were charged, the bank gained 1 $ from account 111
+Bank: commissions of 2 % were charged, the bank gained 1 $ from account 222
+Bank: commissions of 2 % were charged, the bank gained 0 $ from account 12345

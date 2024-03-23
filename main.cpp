@@ -8,6 +8,8 @@
 
 using namespace std;
 void* atm_routine(void* args);
+void* take_fees_routine(void* args);
+void* print_accounts_routine(void* args);
 
 Bank bank;
 
@@ -29,7 +31,16 @@ int main(int argc, char *argv[]){
 	pthread_create(&thread_id1, NULL, atm_routine, (void*)&path_id1);
 	pthread_join(thread_id1, NULL);
 	
-	
+	//thread 3
+	pthread_t thread_id2;
+	pthread_create(&thread_id2, NULL, take_fees_routine, NULL);
+	pthread_join(thread_id2, NULL);
+
+	// thread 4
+	pthread_t thread_id3;
+	pthread_create(&thread_id3, NULL, print_accounts_routine, NULL);
+	pthread_join(thread_id3, NULL);
+
 	logFile.close();
 	return 0;
 }
@@ -42,6 +53,18 @@ void* atm_routine(void* args) {
 		char cmd = parse_line(*it, cmd_args);
 		bank.exe_command(cmd, cmd_args, path_id->second);
 	}
+	pthread_exit(NULL);
+}
+
+void* take_fees_routine(void* args){
+	// needs to add a check that there are still some running atm's
+	bank.take_fees_account();
+	pthread_exit(NULL);
+}
+
+void* print_accounts_routine(void* args){
+	// needs to add a check that there are still some running atm's
+	bank.print_accounts();
 	pthread_exit(NULL);
 }
 
