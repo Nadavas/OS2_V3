@@ -238,6 +238,83 @@ void Bank::check_balance_account(int acc_num, int password, int atm_id){
     readers_unlock(&bank_read_mutex,bank_num_readers,&bank_write_mutex);       // UnLock the Bank for Reading
 }
 
+void Bank::transfer_funds_account(int src_acc_num, int src_acc_password, int trg_acc_num, int amount, int atm_id){
+    readers_lock(&bank_read_mutex,bank_num_readers,&bank_write_mutex);    // Lock the Bank for Reading
+    // sleep(1)
+    map<int, Account>::iterator it_src = accounts.find(src_acc_num);
+    if (it_src == accounts.end()) {
+        //lock log
+        logFile << "Error " << atm_id << ": Your transaction failed - account id " << src_acc_num << " does not exist" << endl;
+        //unlock log
+        readers_unlock(&bank_read_mutex,bank_num_readers,&bank_write_mutex);       // UnLock the Bank for Reading
+        return;
+    }
+    map<int, Account>::iterator it_trg = accounts.find(trg_acc_num);
+    if (it_trg == accounts.end()) {
+        //lock log
+        logFile << "Error " << atm_id << ": Your transaction failed - account id " << trg_acc_num << " does not exist" << endl;
+        //unlock log
+        readers_unlock(&bank_read_mutex,bank_num_readers,&bank_write_mutex);       // UnLock the Bank for Reading
+        return;
+    }
+    if (it_src->second.password != src_acc_password) {
+        //lock log
+        logFile << "Error " << atm_id << ": Your transaction failed - password for account id " << src_acc_num << " is incorrect" << endl;
+        //unlock log
+        readers_unlock(&bank_read_mutex,bank_num_readers,&bank_write_mutex);       // UnLock the Bank for Reading
+        return;
+    }
+    // Lock the accounts in lex order
+    if (src_acc_num < trg_acc_num){
+        //  LOCK SRC THAN TRG - WRITER  - to check if readers lock is needed
+        writers_lock(&(it_src->second.acc_write_mutex));
+        writers_lock(&(it_trg->second.acc_write_mutex));
+    }
+    else{
+        // LOCK TRG THAN SRC  -WRITER
+        writers_lock(&(it_trg->second.acc_write_mutex));
+        writers_lock(&(it_src->second.acc_write_mutex));
+    }
+    if(amount > it_src->second.balance){
+        // lock log
+        logFile << "Error " << atm_id << ": Your transaction failed - account id " << src_acc_num 
+        << " balance is lower than " << amount << endl;
+        // unlock log
+        // unlock in reverse order
+        if (src_acc_num < trg_acc_num){
+            //  UnLOCK TRG THAN SRC - WRITER  
+            writers_unlock(&(it_trg->second.acc_write_mutex));
+            writers_unlock(&(it_src->second.acc_write_mutex));
+        }
+        else{
+            //  UnLOCK SRC THAN TRG - WRITER 
+            writers_unlock(&(it_src->second.acc_write_mutex));
+            writers_unlock(&(it_trg->second.acc_write_mutex));
+        }
+        readers_unlock(&bank_read_mutex,bank_num_readers,&bank_write_mutex);       // UnLock the Bank for Reading
+        return;
+    }
+    it_src->second.balance -= amount;
+    it_trg->second.balance += amount;
+    // lock log
+    logFile << atm_id << ": Transfer "<< amount << " from account " << src_acc_num 
+    << " to account " << trg_acc_num << " new account balance is " << it_src->second.balance 
+    << " new target account balance is " << it_trg->second.balance << endl; 
+    // unlock log
+    // unlock in reverse order
+    if (src_acc_num < trg_acc_num){
+        //  UnLOCK TRG THAN SRC - WRITER  
+        writers_unlock(&(it_trg->second.acc_write_mutex));
+        writers_unlock(&(it_src->second.acc_write_mutex));
+    }
+    else{
+        //  UnLOCK SRC THAN TRG - WRITER 
+        writers_unlock(&(it_src->second.acc_write_mutex));
+        writers_unlock(&(it_trg->second.acc_write_mutex));
+    }
+    readers_unlock(&bank_read_mutex,bank_num_readers,&bank_write_mutex);       // UnLock the Bank for Reading
+}
+
 void Bank::take_fees_account(){
     int total_fees = 0;
     int int_fee = randomize_fee();
@@ -300,8 +377,12 @@ void Bank::exe_command(char cmd_type, vector<int> cmd_args, int atm_id){
 
         case 'B': 
             check_balance_account(cmd_args[0], cmd_args[1], atm_id);
-            break;        
-     
+            break;  
+            
+        case 'T': 
+            transfer_funds_account(cmd_args[0], cmd_args[1], cmd_args[2], cmd_args[3], atm_id);
+            break;
+            
         default: 
             break;
     }
