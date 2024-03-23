@@ -14,3 +14,5 @@ Error 0: Your transaction failed - account id 222 balance is lower than 300
 1: Account 12345 new balance is 40 after 10 $ was deposited
 Error 1: Your transaction failed - password for account id 123 is incorrect
 1: Account 123 is now closed. Balance was 100
+1: Account 12345 new balance is 20 after 20 $ was withdrew
+1: Account 12345 balance is 20
