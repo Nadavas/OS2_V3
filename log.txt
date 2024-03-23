@@ -1,0 +1,9 @@
+
+0: New account id is 111 with password 1234 and initial balance 50
+0: New account id is 222 with password 568 and initial balance 20
+Error 0: Your transaction failed - account with the same id exists
+Error 0: Your transaction failed - account id 333 does not exist
+Error 0: Your transaction failed - password for account id 222 is incorrect
+0: Account 111 is now closed. Balance was 50
+Error 0: Your transaction failed - account id 111 does not exist
+0: Account 222 new balance is 120 after 100 $ was deposited
